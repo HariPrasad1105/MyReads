@@ -30,7 +30,6 @@ class Book extends Component {
     const selectedOption = event.target.value;
 
     if (this.props.shelfName === 'Search Results') {
-      console.log("test")
       BooksAPI.update(this.props.book, selectedOption)
         .then(this.setState(() => ({
           shelf: selectedOption

@@ -17,8 +17,6 @@ class SearchBar extends Component {
   changeHandler = (event) => {
     event.persist();
 
-    console.log(event.target.value);
-
     if (event.target.value.trim().length > 0) {
 
       BooksAPI.search(event.target.value)
@@ -53,7 +51,6 @@ class SearchBar extends Component {
 
 
   selectHandler = () => {
-    console.log("test")
     BooksAPI.search(this.state.query)
       .then((searchResults) => {
         this.setState(() => ({
@@ -63,7 +60,6 @@ class SearchBar extends Component {
   }
 
   render() {
-    console.log("rendering")
     const searchResults = this.state.searchResults;
 
     return (
