@@ -11,19 +11,21 @@ class SearchBar extends Component {
     this.state = {
       query: '',
       searchResults: [],
+      error: '',
     }
   }
 
   changeHandler = (event) => {
     event.persist();
 
-    if (event.target.value.trim().length > 0) {
+    if (event.target.value.trim() !== "") {
 
       BooksAPI.search(event.target.value)
         .then((searchResults) => {
           this.setState(() => ({
             query: event.target.value,
             searchResults: searchResults,
+            error: '',
           }))
         });
     } else {
@@ -35,18 +37,20 @@ class SearchBar extends Component {
 
   }
 
-  keyPressHandler = (event) => {
-  }
-
   submitHandler = (event) => {
     event.preventDefault()
 
-    BooksAPI.search(this.state.query)
-      .then((books) => {
-        this.setState(() => ({
-          searchResults: books
-        }))
-      });
+    this.state.query === ''
+      ? this.setState({
+        error: 'Please enter a search keyword'
+      })
+      : BooksAPI.search(this.state.query)
+        .then((books) => {
+          this.setState(() => ({
+            error: '',
+            searchResults: books,
+          }))
+        });
   }
 
 
@@ -59,8 +63,14 @@ class SearchBar extends Component {
       });
   }
 
+  keyPressHandler = (event) => {
+
+  }
+
   render() {
     const searchResults = this.state.searchResults;
+
+    console.log(this.state);
 
     return (
 
@@ -82,14 +92,17 @@ class SearchBar extends Component {
           </form>
         </div>
 
+
+
         {searchResults !== undefined ? (
           <div className="search-books-results">
             <ol className="books-grid">
               {
-                searchResults.hasOwnProperty('error') && <div>
+                (searchResults.hasOwnProperty('error') || this.state.error !== '') && <div>
                   <p>No Search Results</p>
                 </div>
               }
+
               {
                 searchResults.length > 0 && (
                   <SearchResults
