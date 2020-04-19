@@ -5,29 +5,24 @@ import ListUserBooks from './ListUserBooks';
 import SearchBar from './SearchBar';
 import { Route } from 'react-router-dom';
 
-class BooksApp extends React.Component {
+function BooksApp() {
 
-  state = {
+  return (
+    <div className="app">
 
-  }
+      <Route
+        path='/search'
+        component={SearchBar}
+      />
 
-  render() {
-    return (
-      <div className="app">
+      <Route
+        exact path='/'
+        component={ListUserBooks}
+      />
 
-        <Route
-          path='/search'
-          component={SearchBar}
-        />
+    </div>
+  );
 
-        <Route
-          exact path='/'
-          component={ListUserBooks}
-        />
-
-      </div>
-    )
-  }
 }
 
 export default BooksApp

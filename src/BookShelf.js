@@ -4,9 +4,13 @@ import PropTypes from 'prop-types';
 
 class BookShelf extends Component {
 
+  selectHandler = (e, book) => {
+    this.props.selectHandler(e, book)
+  }
+
   render() {
 
-    const { shelfName, books, selectHandler } = this.props;
+    const { shelfName, books, ...otherProps } = this.props;
 
     return (
       <div>
@@ -22,7 +26,7 @@ class BookShelf extends Component {
                         {
                           <Book
                             book={book}
-                            selectHandler={() => selectHandler()}
+                            selectHandler={this.selectHandler}
                             shelfName={shelfName}
                           />
                         }

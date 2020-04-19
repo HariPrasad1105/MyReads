@@ -11,6 +11,7 @@ class SearchBar extends Component {
     this.state = {
       query: '',
       searchResults: [],
+      userBooks: [],
       error: '',
     }
   }
@@ -27,11 +28,20 @@ class SearchBar extends Component {
             searchResults: searchResults,
             error: '',
           }))
-        });
+        })
+        .then(BooksAPI.getAll()
+          .then(userBooks => {
+            this.setState({
+              userBooks: userBooks
+            })
+          })
+        );
+
     } else {
       this.setState({
         query: '',
-        searchResults: []
+        searchResults: [],
+        userBooks: [],
       })
     }
 
@@ -50,27 +60,41 @@ class SearchBar extends Component {
             error: '',
             searchResults: books,
           }))
-        });
+        })
+        .then(this.updateUserBooks());
   }
 
+  updateUserBooks = () => {
+    BooksAPI.getAll()
+      .then((userBooks) => {
+        this.setState({
+          userBooks: userBooks,
+        })
+      })
+  }
 
-  selectHandler = () => {
+  updateSearchResults = () => {
     BooksAPI.search(this.state.query)
       .then((searchResults) => {
-        this.setState(() => ({
-          searchResults: searchResults
-        }))
-      });
+        this.setState({
+          searchResults
+        })
+      })
   }
 
-  keyPressHandler = (event) => {
+  selectHandler = (event, book) => {
+    event.persist();
 
+    BooksAPI.update(book, event.target.value)
+      .then(this.updateSearchResults())
+      .then(this.updateUserBooks());
   }
 
   render() {
     const searchResults = this.state.searchResults;
+    const userBooks = this.state.userBooks;
 
-    console.log(this.state);
+    console.log("rendering search results");
 
     return (
 
@@ -86,13 +110,10 @@ class SearchBar extends Component {
               <input type="text"
                 placeholder="Search by title or author"
                 onChange={this.changeHandler}
-                onKeyPress={this.keyPressHandler}
               />
             </div>
           </form>
         </div>
-
-
 
         {searchResults !== undefined ? (
           <div className="search-books-results">
@@ -104,10 +125,12 @@ class SearchBar extends Component {
               }
 
               {
+
                 searchResults.length > 0 && (
                   <SearchResults
                     searchResults={searchResults}
                     selectHandler={this.selectHandler}
+                    userBooks={userBooks}
                   />
                 )
               }

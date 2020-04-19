@@ -29,20 +29,33 @@ class ListUserBooks extends Component {
     );
   }
 
-  selectHandler = () => {
-
+  updateResuls = () => {
     BooksAPI.getAll()
       .then((books) => {
-        this.setState(() => ({
-          books: books
-        }))
+        this.setState({
+          books
+        })
       });
   }
 
+  selectHandler = (e, book) => {
+    e.persist();
+
+    const selectedOption = e.target.value;
+
+    BooksAPI.update(book, selectedOption)
+      .then(this.updateResuls);
+  }
+
   render() {
-    const currentlyReadingBooks = this.filterBooksBy("currentlyReading");
-    const wantToReadBooks = this.filterBooksBy("wantToRead");
-    const readingNowBooks = this.filterBooksBy("read");
+
+    console.log(this.state);
+
+    const shelfFilterNames = ["currentlyReading", "wantToRead", "read"];
+
+    const shelfNames = ["Currently Reading", "Want To Read", "Read"];
+
+    const userBooksShelf = shelfFilterNames.map((shelfName) => this.filterBooksBy(shelfName));
 
     return (
       <div className="list-books">
@@ -53,23 +66,17 @@ class ListUserBooks extends Component {
 
         <div className="list-books-content">
           <div>
-            <BookShelf
-              shelfName="Currently Reading"
-              books={currentlyReadingBooks}
-              selectHandler={this.selectHandler}
-            />
 
-            <BookShelf
-              shelfName="Want to Read"
-              books={wantToReadBooks}
-              selectHandler={this.selectHandler}
-            />
-
-            <BookShelf
-              shelfName="Read"
-              books={readingNowBooks}
-              selectHandler={this.selectHandler}
-            />
+            {
+              shelfNames.map(
+                (shelfName, index) => <BookShelf
+                  key={index}
+                  shelfName={shelfName}
+                  books={userBooksShelf[index]}
+                  selectHandler={this.selectHandler}
+                />
+              )
+            }
           </div>
         </div>
 
