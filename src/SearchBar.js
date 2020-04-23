@@ -5,15 +5,11 @@ import SearchResults from './SearchResults';
 
 class SearchBar extends Component {
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      query: '',
-      searchResults: [],
-      userBooks: [],
-      error: '',
-    }
+  state = {
+    query: '',
+    searchResults: [],
+    userBooks: [],
+    error: '',
   }
 
   changeHandler = (event) => {

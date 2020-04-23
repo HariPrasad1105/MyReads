@@ -14,13 +14,9 @@ class ListUserBooks extends Component {
 
   }
 
-  componentDidMount() {
-    BooksAPI.getAll()
-      .then((books) => {
-        this.setState(() => ({
-          books: books
-        }))
-      });
+  async componentDidMount() {
+    const books = await BooksAPI.getAll();
+    this.setState({ books });
   }
 
   filterBooksBy(filterBy) {
@@ -48,8 +44,6 @@ class ListUserBooks extends Component {
   }
 
   render() {
-
-    console.log(this.state);
 
     const shelfFilterNames = ["currentlyReading", "wantToRead", "read"];
 
